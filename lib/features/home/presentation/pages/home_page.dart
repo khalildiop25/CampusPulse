@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../schedule/presentation/pages/schedule_page.dart';
+
 import '../../../calendar/presentation/pages/calendar_page.dart';
+
 import '../../../profile/presentation/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +15,8 @@ class HomePage extends StatefulWidget {
       _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState
+    extends State<HomePage> {
 
   int currentIndex = 0;
 
@@ -31,44 +34,96 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
 
-      body: pages[currentIndex],
+      body: AnimatedSwitcher(
+
+        duration:
+        const Duration(
+          milliseconds: 300,
+        ),
+
+        child: pages[currentIndex],
+      ),
 
       bottomNavigationBar:
-      BottomNavigationBar(
+      Container(
 
-        currentIndex: currentIndex,
+        decoration: BoxDecoration(
 
-        onTap: (index) {
+          boxShadow: [
 
-          setState(() {
+            BoxShadow(
 
-            currentIndex = index;
-          });
-        },
+              color: Colors.black
+                  .withOpacity(0.08),
 
-        items: const [
+              blurRadius: 12,
 
-          BottomNavigationBarItem(
+              offset:
+              const Offset(0, -2),
+            ),
+          ],
+        ),
 
-            icon: Icon(Icons.home),
+        child: BottomNavigationBar(
 
-            label: 'Accueil',
-          ),
+          currentIndex:
+          currentIndex,
 
-          BottomNavigationBarItem(
+          onTap: (index) {
 
-            icon: Icon(Icons.calendar_month),
+            setState(() {
 
-            label: 'Calendrier',
-          ),
+              currentIndex =
+                  index;
+            });
+          },
 
-          BottomNavigationBarItem(
+          type:
+          BottomNavigationBarType
+              .fixed,
 
-            icon: Icon(Icons.person),
+          selectedItemColor:
+          Colors.blue,
 
-            label: 'Profil',
-          ),
-        ],
+          unselectedItemColor:
+          Colors.grey,
+
+          selectedFontSize: 14,
+
+          unselectedFontSize: 12,
+
+          elevation: 10,
+
+          items: const [
+
+            BottomNavigationBarItem(
+
+              icon: Icon(
+                Icons.home,
+              ),
+
+              label: 'Accueil',
+            ),
+
+            BottomNavigationBarItem(
+
+              icon: Icon(
+                Icons.calendar_month,
+              ),
+
+              label: 'Calendrier',
+            ),
+
+            BottomNavigationBarItem(
+
+              icon: Icon(
+                Icons.person,
+              ),
+
+              label: 'Profil',
+            ),
+          ],
+        ),
       ),
     );
   }
