@@ -75,6 +75,12 @@ class CourseDetailsPage extends StatelessWidget {
             const SizedBox(height: 20),
 
             buildInfoTile(
+              Icons.access_time,
+              'daate',
+              '${course.date}',
+            ),
+
+            buildInfoTile(
               Icons.location_on,
               'Salle',
               course.salle,
@@ -91,6 +97,7 @@ class CourseDetailsPage extends StatelessWidget {
               'Horaire',
               '${course.heureDebut} - ${course.heureFin}',
             ),
+
           ],
         ),
       ),

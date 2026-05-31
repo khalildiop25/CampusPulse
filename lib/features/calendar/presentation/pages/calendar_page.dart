@@ -1,24 +1,62 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarPage extends StatefulWidget {
+import '../../../schedule/presentation/providers/course_provider.dart';
 
-  const CalendarPage({super.key});
+class CalendarPage
+    extends ConsumerStatefulWidget {
+
+  const CalendarPage({
+    super.key,
+  });
 
   @override
-  State<CalendarPage> createState() =>
+  ConsumerState<CalendarPage>
+  createState() =>
       _CalendarPageState();
 }
 
 class _CalendarPageState
-    extends State<CalendarPage> {
+    extends ConsumerState<CalendarPage> {
 
   DateTime today =
   DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+
+    final coursesAsync =
+    ref.watch(
+      courseProvider,
+    );
+
+    final courses =
+        coursesAsync.value ?? [];
+
+    final selectedCourses =
+    courses.where((course) {
+
+      try {
+
+        final courseDate =
+        DateTime.parse(
+          course.date,
+        );
+
+        return isSameDay(
+          courseDate,
+          today,
+        );
+
+      } catch (e) {
+
+        return false;
+      }
+
+    }).toList();
 
     return Scaffold(
 
@@ -32,6 +70,10 @@ class _CalendarPageState
       body: Column(
 
         children: [
+
+          // =========================
+          // CALENDRIER
+          // =========================
 
           TableCalendar(
 
@@ -56,8 +98,10 @@ class _CalendarPageState
             },
 
             onDaySelected:
-                (selectedDay,
-                focusedDay) {
+                (
+                selectedDay,
+                focusedDay,
+                ) {
 
               setState(() {
 
@@ -67,76 +111,271 @@ class _CalendarPageState
             },
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: 20,
+          ),
+
+          // =========================
+          // LISTE DES COURS
+          // =========================
 
           Expanded(
 
-            child: ListView(
+            child: Padding(
 
               padding:
-              const EdgeInsets.all(16),
+              const EdgeInsets.all(
+                16,
+              ),
 
-              children: [
+              child:
+              selectedCourses
+                  .isEmpty
 
-                Container(
+                  ? Container(
 
-                  padding:
-                  const EdgeInsets.all(20),
+                width:
+                double.infinity,
 
-                  decoration: BoxDecoration(
+                padding:
+                const EdgeInsets.all(
+                  24,
+                ),
 
-                    color: Colors.blue
-                        .withOpacity(0.1),
+                decoration:
+                BoxDecoration(
 
-                    borderRadius:
-                    BorderRadius.circular(20),
+                  color: Colors.blue
+                      .withOpacity(
+                    0.1,
                   ),
 
-                  child: Column(
+                  borderRadius:
+                  BorderRadius.circular(
+                    20,
+                  ),
+                ),
 
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                child: Column(
 
-                    children: [
+                  mainAxisSize:
+                  MainAxisSize.min,
 
-                      Text(
+                  children: [
 
-                        'Cours du jour',
+                    const Icon(
 
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge,
+                      Icons
+                          .calendar_month,
+
+                      size: 60,
+
+                      color:
+                      Colors.blue,
+                    ),
+
+                    const SizedBox(
+                      height: 16,
+                    ),
+
+                    Text(
+
+                      '${today.day}/${today.month}/${today.year}',
+
+                      style:
+                      const TextStyle(
+
+                        fontSize:
+                        20,
+
+                        fontWeight:
+                        FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 12,
+                    ),
+
+                    const Text(
+
+                      'Aucun cours programmé',
+
+                      style:
+                      TextStyle(
+
+                        fontSize:
+                        16,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+
+                  : ListView.builder(
+
+                itemCount:
+                selectedCourses
+                    .length,
+
+                itemBuilder:
+                    (
+                    context,
+                    index,
+                    ) {
+
+                  final course =
+                  selectedCourses[
+                  index];
+
+                  return Container(
+
+                    margin:
+                    const EdgeInsets.only(
+                      bottom:
+                      16,
+                    ),
+
+                    decoration:
+                    BoxDecoration(
+
+                      color:
+                      Colors.white,
+
+                      borderRadius:
+                      BorderRadius.circular(
+                        20,
                       ),
 
-                      const SizedBox(
-                        height: 16,
+                      boxShadow: [
+
+                        BoxShadow(
+
+                          color: Colors
+                              .black
+                              .withOpacity(
+                            0.05,
+                          ),
+
+                          blurRadius:
+                          10,
+
+                          offset:
+                          const Offset(
+                            0,
+                            4,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    child:
+                    ListTile(
+
+                      contentPadding:
+                      const EdgeInsets.all(
+                        16,
                       ),
 
-                      Text(
+                      leading:
+                      Container(
 
-                        '${today.day}/${today.month}/${today.year}',
+                        padding:
+                        const EdgeInsets.all(
+                          12,
+                        ),
+
+                        decoration:
+                        BoxDecoration(
+
+                          color: Colors
+                              .blue
+                              .withOpacity(
+                            0.1,
+                          ),
+
+                          borderRadius:
+                          BorderRadius.circular(
+                            12,
+                          ),
+                        ),
+
+                        child:
+                        const Icon(
+
+                          Icons.school,
+
+                          color:
+                          Colors.blue,
+                        ),
+                      ),
+
+                      title: Text(
+
+                        course.titre,
 
                         style:
                         const TextStyle(
 
-                          fontSize: 18,
+                          fontWeight:
+                          FontWeight.bold,
+
+                          fontSize:
+                          16,
+                        ),
+                      ),
+
+                      subtitle:
+                      Padding(
+
+                        padding:
+                        const EdgeInsets.only(
+                          top: 8,
+                        ),
+
+                        child:
+                        Column(
+
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+
+                          children: [
+
+                            Text(
+                              course
+                                  .enseignant,
+                            ),
+
+                            Text(
+                              course
+                                  .salle,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      trailing:
+                      Text(
+
+                        '${course.heureDebut}\n'
+                            '${course.heureFin}',
+
+                        textAlign:
+                        TextAlign
+                            .center,
+
+                        style:
+                        const TextStyle(
 
                           fontWeight:
                           FontWeight.bold,
                         ),
                       ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                      const Text(
-                        'Aucun cours programmé',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],

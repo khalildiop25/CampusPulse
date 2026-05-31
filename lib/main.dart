@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'core/services/notification_service.dart';
 
 import 'features/schedule/presentation/pages/schedule_page.dart';
 import 'core/constants/app_colors.dart';
@@ -25,6 +26,8 @@ Future<void> main() async {
   );
 
   await Hive.initFlutter();
+  await NotificationService().init();
+
 
   runApp(
 

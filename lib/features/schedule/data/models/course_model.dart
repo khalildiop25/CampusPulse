@@ -8,6 +8,7 @@ class CourseModel extends CourseEntity {
     required super.enseignant,
     required super.heureDebut,
     required super.heureFin,
+    required super.date,
   });
 
   factory CourseModel.fromFirestore(
@@ -20,6 +21,7 @@ class CourseModel extends CourseEntity {
       enseignant: json['enseignant'] ?? '',
       heureDebut: json['heureDebut'] ?? '',
       heureFin: json['heureFin'] ?? '',
+      date: json['date'] ?? '',
     );
   }
 }
